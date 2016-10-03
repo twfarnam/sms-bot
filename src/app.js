@@ -3,30 +3,76 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import expressWs from 'express-ws';
 
-import mongo from 'then-mongo';
+import multer from 'multer';
+import {MailParser} from 'mailparser';
 
-var mongo = require('then-mongo');
-var db = mongo('connection-string', ['collectionA', 'collectionB']);
-
+import * as config from './config';
+import api from './api';
 
 let app = express();
+let ws = expressWs(app);
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
+app.use('/api', api);
+
+// html
 app.get('/', (req, res) => {
-  res.send('dude');
-})
+  res.render('index');
+});
+
 
 app.post('/twilio', (req, res) => {
+  config.db.twilio_incoming.insert(req.body);
+
+  sendEmail({
+    subject: req.body.From,
+    from: req.body.From,
+    text: req.body.Body,
+    html: `<b>${req.body.Body}</b>`,
+  });
+
   res.send('ok');
 });
+
+
+var storage = multer.memoryStorage()
+var upload = multer({ storage: storage })
+
+app.post('/sendgrid', upload.array(), (req, res) => {
+  res.send('ok');
+
+  let mailparser = new MailParser();
+  mailparser.write(req.body.email);
+  mailparser.end();
+  mailparser.on('end', mail => {
+    config.db.email_incoming.insert(mail);
+    if (mail.from[0].address == 'twfarnam@gmail.com') {
+      sendSMS({
+        to: mail.headers.to.name,
+        body: mail.text.split('\n')[0],
+      });
+    }
+  });
+
+});
+
+app.ws('/updates', function(ws, req) {
+
+  ws.on('message', function(msg) {
+    ws.send(msg);
+  });
+
+});
+
 
 // catch 404 
 app.use((req, res, next) => {
@@ -48,16 +94,54 @@ let port = 3000;
 app.listen(port, () => console.log(`listening port ${port}`));
 
 
-
+//sendSMS({body: 'moonbase to apollo'});
 
 function sendSMS({body, to = '+12025279686'}) {
 
-  client.messages.create({body, to, from: '+9172424207'})
+  console.log(arguments[0]);
+
+  config.twilio.messages.create({body, to, from: '+19172424207'})
   .then(message => {
     console.log(message);
-
+    config.db.twilio_outgoing.insert(message);
   })
   .catch(err => {
     console.error(err);
   });
 }
+
+// sendEmail({
+//   subject: 'Hello ✔',
+//   from: '+12025279686',
+//   text: 'Hello world 🐴',
+//   html: '<b>Hello world 🐴</b>'
+// });
+
+function sendEmail({subject, from, text, html}) {
+
+  // setup e-mail data with unicode symbols
+  var mailOptions = {
+    subject, text, html,
+    from: `"${from}" <${from}@sms.squids.online>`,
+    to: 'twfarnam@gmail.com',
+  };
+
+  config.mailer.sendMail(mailOptions)
+  .then(info => {
+    console.log('Message sent',info);
+  })
+  .catch(error => console.error(error));
+}
+
+
+
+//    "mailin": "^3.0.3",
+
+// import mailin from 'mailin';
+
+// mailin.start({port: 25, disableWebhook: true});
+
+// mailin.on('message', (connection, data, content) => {
+//   console.log(data);
+// });
+
