@@ -1,4 +1,5 @@
 import React from 'react';
+import app from './index';
 
 export default class Thread extends React.Component {
 
@@ -11,7 +12,7 @@ export default class Thread extends React.Component {
   }
 
   showMessages() {
-    console.log(this);
+    app.setActiveThread(this.props.id);
   }
 
 };

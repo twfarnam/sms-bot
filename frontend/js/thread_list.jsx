@@ -5,7 +5,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="thread-list">
         { this.props.threads.map(t => <Thread key={t.id} {...t} />) }
       </div>
     );

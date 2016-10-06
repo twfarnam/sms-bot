@@ -10,15 +10,21 @@ export default class MessageList extends React.Component {
   }
 
   render() {
-    let messages = this.props.messages.map(m => {
-      return <Message key={m._id} {...m} />;
-    });
-    return (
-      <div>
-        {messages}
-        <MessageForm />
-      </div>
-    );
+    if (!this.props.messages) {
+      return (
+        <div className="message-list">
+          <h1 className="loading">Select a thread</h1>
+        </div>
+      );
+    }
+    else {
+      return (
+        <div className="message-list">
+          {this.props.messages.map(m => <Message key={m._id} {...m} />)}
+          <MessageForm />
+        </div>
+      );
+    }
   }
 
 }

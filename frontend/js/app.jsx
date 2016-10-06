@@ -23,9 +23,19 @@ export default class App extends React.Component {
   }
 
 
+  setActiveThread(id) {
+    console.log(id);
+    fetch(`/api/threads/${id}`)
+    .then(response => response.json())
+    .then(data => {
+      this.setState....
+      this.setState({activeThread: data})
+    })
+    .catch(err => console.error(err));
+  }
+
 // from websocket?
 //   addMessage() {
-//     // State change will cause component re-render
 //     this.setState(this.state.concat([
 //       {id:2,name:"Another Name"}
 //     ]))
@@ -33,14 +43,18 @@ export default class App extends React.Component {
 
 
   render() {
-    if (this.state.loading)
-      return <h1>Loading...</h1>;
+
+    if (this.state.loading) {
+      return (
+        <h1 className="loading">Loading...</h1>
+      );
+    }
 
     return (
-      <div>
+      <main>
         <ThreadList threads={this.state.threads} />
-        <MessageList thread={this.state.activeTread} />
-      </div>
+        <MessageList messages={this.state.activeThread} />
+        </main>
     );
   }
 

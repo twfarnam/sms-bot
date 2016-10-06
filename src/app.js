@@ -65,11 +65,10 @@ app.post('/sendgrid', upload.array(), (req, res) => {
 
 });
 
-app.ws('/updates', function(ws, req) {
 
-  ws.on('message', function(msg) {
-    ws.send(msg);
-  });
+app.ws('/updates', (ws, req) => {
+
+  ws.on('message', (msg) => { ws.send(msg); });
 
 });
 
