@@ -1,6 +1,7 @@
 import mongo from 'then-mongo';
 import twilio from 'twilio';
 
+export let number = '+12025279686'; // process.env.PHONE_NUMBER;
 
 let accountSid = process.env.TWILIO_ACCOUNT_SID;
 let authToken = process.env.TWILIO_AUTH_TOKEN;

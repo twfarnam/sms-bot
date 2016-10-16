@@ -95,13 +95,13 @@ app.listen(port, () => console.log(`listening port ${port}`));
 
 //sendSMS({body: 'moonbase to apollo'});
 
-function sendSMS({body, to = '+12025279686'}) {
+function sendSMS({body, to}) {
 
-  console.log(arguments[0]);
+  // console.log(arguments[0]);
 
-  config.twilio.messages.create({body, to, from: '+19172424207'})
+  config.twilio.messages.create({body, to, from: config.number})
   .then(message => {
-    console.log(message);
+    //console.log(message);
     config.db.twilio_outgoing.insert(message);
   })
   .catch(err => {
@@ -121,26 +121,16 @@ function sendEmail({subject, from, text, html}) {
   // setup e-mail data with unicode symbols
   var mailOptions = {
     subject, text, html,
-    from: `"${from}" <${from}@sms.squids.online>`,
+    from: `"${from}" <${from}@squids.online>`,
     to: 'twfarnam@gmail.com',
   };
 
   config.mailer.sendMail(mailOptions)
   .then(info => {
-    console.log('Message sent',info);
+    //console.log('Message sent',info);
   })
   .catch(error => console.error(error));
+
 }
 
-
-
-//    "mailin": "^3.0.3",
-
-// import mailin from 'mailin';
-
-// mailin.start({port: 25, disableWebhook: true});
-
-// mailin.on('message', (connection, data, content) => {
-//   console.log(data);
-// });
 
