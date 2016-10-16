@@ -61,7 +61,7 @@ gulp.task('watch', ['server-js','js', 'less'], () => {
 });
 
 var script = 'build/app.js';
-gulp.task('start-dev', ['watch'], () => {
+gulp.task('dev', ['watch'], () => {
   nodemon({script, watch:  ['build'], env:{NODE_ENV: 'development'}});
 });
 

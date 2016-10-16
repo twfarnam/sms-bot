@@ -15,6 +15,7 @@ router.route('/threads')
 
 });
 
+
 router.route('/threads/:contact')
 .get((req, res) => {
   console.log(req.params);

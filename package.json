@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp build",
-    "start-dev": "env $(cat env) gulp start-dev",
+    "dev": "env $(cat env) gulp dev",
     "start": "env $(cat env) gulp start"
   },
   "author": "",
