@@ -40,7 +40,7 @@ app.post('/twilio', (req, res) => {
     html: `<b>${req.body.Body}</b>`,
   });
 
-  res.send('ok');
+  res.send('<Response></Response>');
 });
 
 
