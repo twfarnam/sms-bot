@@ -33,12 +33,14 @@ app.get('/', (req, res) => {
 app.post('/twilio', (req, res) => {
   config.db.twilio_incoming.insert(req.body);
 
-  sendEmail({
-    subject: req.body.From,
-    from: req.body.From,
-    text: req.body.Body,
-    html: `<b>${req.body.Body}</b>`,
-  });
+  let text = req.body.Body;
+  let html = req.body.Body;
+  if (req.body.MediaUrl0) {
+    text += '\n\n' + req.body.MediaUrl0;
+    html += `<br><br> ${ req.body.MediaUrl0 } <br><br> <pre>${ JSON.stringify(req.body, null, 2) }</pre>`;
+  }
+
+  sendEmail({subject: req.body.From, from: req.body.From, text, html});
 
   res.send('<Response></Response>');
 });
@@ -56,10 +58,9 @@ app.post('/sendgrid', upload.array(), (req, res) => {
   mailparser.on('end', mail => {
     config.db.email_incoming.insert(mail);
     if (mail.from[0].address == 'twfarnam@gmail.com') {
-      sendSMS({
-        to: mail.headers.to.name,
-        body: mail.text.split('\n')[0],
-      });
+      let i = mail.to[0].address.indexOf('@');
+      let to = mail.to[0].address.slice(0,i);
+      sendSMS({to, body: mail.text.split('\n')[0]});
     }
   });
 
@@ -121,7 +122,7 @@ function sendEmail({subject, from, text, html}) {
   // setup e-mail data with unicode symbols
   var mailOptions = {
     subject, text, html,
-    from: `"${from}" <${from}@squids.online>`,
+    from: `"${from}" <${from}@sms.squids.online>`,
     to: 'twfarnam@gmail.com',
   };
 

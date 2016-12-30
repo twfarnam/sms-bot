@@ -28,7 +28,7 @@ export default class App extends React.Component {
     fetch(`/api/threads/${id}`)
     .then(response => response.json())
     .then(data => {
-      this.setState....
+      //this.setState....
       this.setState({activeThread: data})
     })
     .catch(err => console.error(err));
