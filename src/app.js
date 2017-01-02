@@ -33,12 +33,14 @@ app.get('/', (req, res) => {
 app.post('/twilio', (req, res) => {
   config.db.twilio_incoming.insert(req.body);
 
-  sendEmail({
-    subject: req.body.From,
-    from: req.body.From,
-    text: req.body.Body,
-    html: `<b>${req.body.Body}</b>`,
-  });
+  let text = req.body.Body;
+  let html = req.body.Body;
+  if (req.body.MediaUrl0) {
+    text += '\n\n' + req.body.MediaUrl0;
+    html += `<br><br> ${ req.body.MediaUrl0 } <br><br> <pre>${ JSON.stringify(req.body, null, 2) }</pre>`;
+  }
+
+  sendEmail({subject: req.body.From, from: req.body.From, text, html});
 
   res.send('<Response></Response>');
 });
@@ -56,10 +58,9 @@ app.post('/sendgrid', upload.array(), (req, res) => {
   mailparser.on('end', mail => {
     config.db.email_incoming.insert(mail);
     if (mail.from[0].address == 'twfarnam@gmail.com') {
-      sendSMS({
-        to: mail.headers.to.name,
-        body: mail.text.split('\n')[0],
-      });
+      let i = mail.to[0].address.indexOf('@');
+      let to = mail.to[0].address.slice(0,i);
+      sendSMS({to, body: mail.text.split('\n')[0]});
     }
   });
 
@@ -95,13 +96,13 @@ app.listen(port, () => console.log(`listening port ${port}`));
 
 //sendSMS({body: 'moonbase to apollo'});
 
-function sendSMS({body, to = '+12025279686'}) {
+function sendSMS({body, to}) {
 
-  console.log(arguments[0]);
+  // console.log(arguments[0]);
 
-  config.twilio.messages.create({body, to, from: '+19172424207'})
+  config.twilio.messages.create({body, to, from: config.number})
   .then(message => {
-    console.log(message);
+    //console.log(message);
     config.db.twilio_outgoing.insert(message);
   })
   .catch(err => {
@@ -127,20 +128,10 @@ function sendEmail({subject, from, text, html}) {
 
   config.mailer.sendMail(mailOptions)
   .then(info => {
-    console.log('Message sent',info);
+    //console.log('Message sent',info);
   })
   .catch(error => console.error(error));
+
 }
 
-
-
-//    "mailin": "^3.0.3",
-
-// import mailin from 'mailin';
-
-// mailin.start({port: 25, disableWebhook: true});
-
-// mailin.on('message', (connection, data, content) => {
-//   console.log(data);
-// });
 

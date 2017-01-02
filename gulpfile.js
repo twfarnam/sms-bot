@@ -45,7 +45,7 @@ gulp.task('less', () => {
   .pipe(gulp.dest('./public'));
 });
 
-gulp.task('build', ['js', 'less'], () => {
+gulp.task('build', ['server-js','js', 'less'], () => {
   console.log('done');
 });
 
