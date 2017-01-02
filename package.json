@@ -1,10 +1,9 @@
 {
-  "name": "smser",
+  "name": "smsbot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp build",
     "dev": "env $(cat env) gulp dev",
     "start": "env $(cat env) gulp start"
@@ -39,5 +38,26 @@
     "vinyl-source-stream": "^1.1.0",
     "whatwg-fetch": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "apps": [
+    {
+      "name": "smsbot",
+      "script": "build/app.js",
+      "cwd": "/home/tentacle/smsbot/current",
+      "out_file": "../logs/player.out.log",
+      "error_file": "../logs/player.error.log",
+      "exec_mode": "cluster",
+      "instances": 0
+    }
+  ],
+  "deploy": {
+    "production": {
+      "host": "sms.squids.online",
+      "user": "tentacle",
+      "repo": "https://github.com/twfarnam/sms-bot.git",
+      "ref": "origin/master",
+      "path": "/home/tentacle/smsbot",
+      "post-deploy": "npm install && npm run clean && npm run build && pm2 startOrRestart package.json"
+    }
+  }
 }
