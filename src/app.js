@@ -25,9 +25,9 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/api', api);
 
 // html
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// app.get('/', (req, res) => {
+//   res.render('index');
+// });
 
 
 app.post('/twilio', (req, res) => {

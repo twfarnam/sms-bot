@@ -7,7 +7,7 @@
     "build": "gulp build",
     "clean": "rm -rf build",
     "dev": "env $(cat env) gulp dev",
-    "start": "env $(cat env) gulp start"
+    "start": "env $(cat env) nodemon build/app.js"
   },
   "author": "",
   "license": "ISC",
