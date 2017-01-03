@@ -62,7 +62,7 @@
       "repo": "https://github.com/twfarnam/sms-bot.git",
       "ref": "origin/master",
       "path": "/home/tentacle/smsbot",
-      "post-deploy": "npm install && npm run clean && npm run build && pm2 startOrRestart package.json"
+      "post-deploy": "npm install && npm run clean && npm run build && env $(cat env) pm2 startOrRestart package.json"
     }
   }
 }
