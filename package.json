@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "gulp build",
+    "clean": "rm -rf build",
     "dev": "env $(cat env) gulp dev",
     "start": "env $(cat env) gulp start"
   },
@@ -52,7 +53,13 @@
       "out_file": "../logs/player.out.log",
       "error_file": "../logs/player.error.log",
       "exec_mode": "cluster",
-      "instances": 0
+      "instances": 0,
+      "env": {
+        "NODE_ENV": "development",
+      },
+      "env_production" : {
+         "NODE_ENV": "production"
+      }
     }
   ],
   "deploy": {

@@ -65,7 +65,3 @@ gulp.task('dev', ['watch'], () => {
   nodemon({script, watch:  ['build'], env:{NODE_ENV: 'development'}});
 });
 
-gulp.task('start', () => {
-  nodemon({script, env:{NODE_ENV: 'production'}})
-});
-
