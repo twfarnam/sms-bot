@@ -9,26 +9,15 @@ import multer from 'multer';
 import {MailParser} from 'mailparser';
 
 import * as config from './config';
-import api from './api';
 
 let app = express();
 let ws = expressWs(app);
 
-app.set('views', path.join(__dirname, '..', 'views'));
-app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
-
-app.use('/api', api);
-
-// html
-// app.get('/', (req, res) => {
-//   res.render('index');
-// });
-
 
 app.post('/twilio', (req, res) => {
   config.db.twilio_incoming.insert(req.body);
@@ -37,8 +26,8 @@ app.post('/twilio', (req, res) => {
   let html = req.body.Body;
   if (req.body.MediaUrl0) {
     text += '\n\n' + req.body.MediaUrl0;
-    html += `<br><br> ${ req.body.MediaUrl0 } <br><br> <pre>${ JSON.stringify(req.body, null, 2) }</pre>`;
   }
+  html += `<br><br> <pre>${ JSON.stringify(req.body, null, 2) }</pre>`;
 
   sendEmail({subject: req.body.From, from: req.body.From, text, html});
 
@@ -60,34 +49,10 @@ app.post('/sendgrid', upload.array(), (req, res) => {
     if (mail.from[0].address == 'twfarnam@gmail.com') {
       let i = mail.to[0].address.indexOf('@');
       let to = mail.to[0].address.slice(0,i);
-      sendSMS({to, body: mail.text.split('\n')[0]});
+      sendSMS({to, body: mail.text.split('\n\n')[0].replace('\n','')});
     }
   });
 
-});
-
-
-app.ws('/updates', (ws, req) => {
-
-  ws.on('message', (msg) => { ws.send(msg); });
-
-});
-
-
-// catch 404 
-app.use((req, res, next) => {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: app.get('env') === 'development' ? err : {},
-  });
 });
 
 let port = 3000;
