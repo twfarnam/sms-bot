@@ -2,8 +2,6 @@
 dump
 env
 build
-public/main.css
-public/main.js
 
 .DS_Store
 node_modules
