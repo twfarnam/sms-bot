@@ -27,7 +27,7 @@
     "nodemailer-ses-transport": "^1.4.0",
     "nodemon": "^1.10.2",
     "then-mongo": "^2.3.2",
-    "twilio": "^2.11.0",
+    "twilio": "^2.11.0"
   },
   "devDependencies": {},
   "apps": [
