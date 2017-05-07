@@ -2,7 +2,7 @@ var babel = require('gulp-babel');
 var gulp = require('gulp');
 var nodemon = require('gulp-nodemon');
 
-gulp.task('js', () => {
+gulp.task('build', () => {
   return gulp.src('src/**/*.js')
   .pipe(babel({presets: ['es2015']}))
   .on('error', err => {
@@ -12,8 +12,8 @@ gulp.task('js', () => {
   .pipe(gulp.dest('build'));
 });
 
-gulp.task('watch', ['js'], () => {
-  gulp.watch('./src/**/*.js', ['js']);
+gulp.task('watch', ['build'], () => {
+  gulp.watch('./src/**/*.js', ['build']);
 });
 
 var script = 'build/app.js';
