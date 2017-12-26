@@ -34,9 +34,9 @@
     {
       "name": "smsbot",
       "script": "build/app.js",
-      "cwd": "/home/tentacle/smsbot/current",
-      "out_file": "../logs/player.out.log",
-      "error_file": "../logs/player.error.log",
+      "cwd": "/home/tim/smsbot/current",
+      "out_file": "../logs/out.log",
+      "error_file": "../logs/error.log",
       "exec_mode": "cluster",
       "instances": 0,
       "env": {
