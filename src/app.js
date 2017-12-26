@@ -3,7 +3,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import expressWs from 'express-ws';
 
 import multer from 'multer';
 import {MailParser} from 'mailparser';
@@ -11,7 +10,6 @@ import {MailParser} from 'mailparser';
 import * as config from './config';
 
 let app = express();
-let ws = expressWs(app);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
