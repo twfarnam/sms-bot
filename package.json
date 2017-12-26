@@ -49,11 +49,11 @@
   ],
   "deploy": {
     "production": {
-      "host": "sms.squids.online",
-      "user": "tentacle",
+      "host": "squids.online",
+      "user": "tim",
       "repo": "https://github.com/twfarnam/sms-bot.git",
       "ref": "origin/master",
-      "path": "/home/tentacle/smsbot",
+      "path": "/home/tim/smsbot",
       "post-deploy": "npm install && npm run clean && npm run build && env $(cat ../shared/env) pm2 startOrRestart package.json"
     }
   }
