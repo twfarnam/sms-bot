@@ -21,7 +21,7 @@ app.post('/twilio', (req, res) => {
   config.db.twilio_incoming.insert(req.body);
 
   let text = req.body.Body;
-  let html = req.body.Body;
+  let html = `<pre>${req.body.Body}<pre>`;
   if (req.body.MediaUrl0) {
     text += '\n\n' + req.body.MediaUrl0;
   }
